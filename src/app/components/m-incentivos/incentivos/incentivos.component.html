@@ -1,0 +1,88 @@
+<style>
+  .background-container {
+    background-color: #ff455c;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .custom-table {
+    background-color: #000064;
+    border-radius: 10px;
+    color: aliceblue;
+  }
+
+  .custom-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .custom-checkbox input[type="checkbox"] {
+    width: 25px;
+    height: 25px;
+  }
+
+  .custom-checkbox label {
+    color: rgb(245, 245, 245);
+    margin-left: 10px;
+    font-size: 16px;
+  }
+
+  .custom-button {
+    display: flex;
+    justify-content: center;
+  }
+</style>
+
+<div class="navbar">
+  <div class="container" style="padding: 10px">
+    <div class="logo-container">
+      <img
+        src="../../../assets/img/logo_rom.png"
+        alt="Logo"
+        class="img-fluid"
+        style="max-width: 200px"
+      />
+    </div>
+  </div>
+</div>
+
+<div class="background-container">
+  <div class="container">
+    <br>
+    <br>
+    <h2 style="color: rgb(245, 245, 245);">Tabla de Incentivos</h2>
+    <div class="table-responsive">
+      <table class="table custom-table">
+        <thead>
+          <tr>
+            <th>Descripción</th>
+            <th>Empresa</th>
+            <th>Monto</th>
+            <th>Confirmación de Entrega</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let incentivo of listIncentivos">
+            <td>{{ incentivo.descripcion }}</td>
+            <td>{{ incentivo.empresa }}</td>
+            <td>{{ incentivo.monto }}</td>
+            <td>{{ incentivo.ConfirmacionEntrega ? "Sí" : "No" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="custom-checkbox">
+      <input type="checkbox"  id="checkbox" [(ngModel)]="isCheckboxChecked" />
+      <label for="checkbox"> <strong>⬅️Acepta la entrega de los Incentivos</strong></label>
+    </div>
+
+    <div class="custom-button">
+      <button type="button" class="btn btn-primary" style="padding: 10px; font-size: 20px;" (click)="updateIncentivos()">Enviar</button>
+    </div>
+  </div>
+</div>
