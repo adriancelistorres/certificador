@@ -36,7 +36,6 @@
     justify-content: center;
   }
 </style>
-
 <div class="navbar">
   <div class="container" style="padding: 10px">
     <div class="logo-container">
@@ -63,6 +62,8 @@
             <th>Empresa</th>
             <th>Monto</th>
             <th>Confirmación de Entrega</th>
+            <th>Aceptar</th>
+
           </tr>
         </thead>
         <tbody>
@@ -71,18 +72,25 @@
             <td>{{ incentivo.empresa }}</td>
             <td>{{ incentivo.monto }}</td>
             <td>{{ incentivo.ConfirmacionEntrega ? "Sí" : "No" }}</td>
+            <td>
+              <!-- Botón "Aceptar" para cada elemento -->
+              <button type="button" class="btn btn-success" (click)="onAceptar(incentivo)" [disabled]="incentivo.aceptado">
+                Aceptar
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="custom-checkbox">
+    <!-- <div class="custom-checkbox">
       <input type="checkbox"  id="checkbox" [(ngModel)]="isCheckboxChecked" />
       <label for="checkbox"> <strong>⬅️Acepta la entrega de los Incentivos</strong></label>
-    </div>
+    </div> -->
 
     <div class="custom-button">
-      <button type="button" class="btn btn-primary" style="padding: 10px; font-size: 20px;" (click)="updateIncentivos()">Enviar</button>
+      <!-- El botón "Enviar" estará deshabilitado inicialmente -->
+      <button type="button" class="btn btn-primary" style="padding: 10px; font-size: 30px;" (click)="updateIncentivos()" [disabled]="!todosAceptados()">Enviar</button>
     </div>
   </div>
 </div>

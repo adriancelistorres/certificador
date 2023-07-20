@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IIncentivoPagoRequest } from 'src/app/interfaces/IIncentivoPagoReques';
 import { IIncentivoPago } from 'src/app/interfaces/IIncentivosPago';
 import { IncentivosService } from 'src/app/services/incentivos.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -13,16 +13,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./incentivos.component.css']
 })
 export class IncentivosComponent {
-  dni:any ;
+  dni: any;
   listIncentivos: IIncentivoPago[] = [];
-  isCheckboxChecked: boolean = false;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
     private _incentivosServices: IncentivosService,
     private toastr: ToastrService,
     private _router: Router
-
   ) {}
 
   ngOnInit(): void {
@@ -56,9 +54,39 @@ export class IncentivosComponent {
     );
   }
 
+  // Función que se ejecuta cuando se presiona el botón "Aceptar" para un incentivo
+  onAceptar(incentivo: IIncentivoPago): void {
+    Swal.fire({
+      title: '¡ADVERTENCIA!',
+      text: 'Al aceptar este incentivo, asume la total responsabilidad. Cualquier reclamo futuro será ignorado y no nos haremos responsables por las consecuencias.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, aceptar bajo mi responsabilidad',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        incentivo.ConfirmacionEntrega = true;
+        incentivo.aceptado = true; // Establecer el incentivo como aceptado
+        Swal.fire({
+          title: '¡Aceptado!',
+          text: 'Has aceptado el incentivo bajo tu responsabilidad.',
+          icon: 'success',
+          timer: 2000,
+          timerProgressBar: true
+        });
+      }
+    });
+  }
+
+
+
+  // Función que verifica si todos los incentivos han sido aceptados
+  todosAceptados(): boolean {
+    return this.listIncentivos.every(incentivo => incentivo.ConfirmacionEntrega);
+  }
 
   updateIncentivos(): void {
-    if (!this.isCheckboxChecked) {
+    if (!this.todosAceptados()) {
       this.toastr.warning('Debe aceptar la entrega de los incentivos.', 'PRESIONA EN EL CHECK');
       return;
     }
@@ -73,8 +101,4 @@ export class IncentivosComponent {
       }
     );
   }
-
-
-
-
 }
