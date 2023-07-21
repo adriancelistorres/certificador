@@ -5,6 +5,7 @@ import { IIncentivoPago } from 'src/app/interfaces/IIncentivosPago';
 import { IncentivosService } from 'src/app/services/incentivos.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { IIncentivoVista } from 'src/app/interfaces/IIncentivoVista';
 
 
 @Component({
@@ -14,7 +15,7 @@ import Swal from 'sweetalert2';
 })
 export class IncentivosComponent {
   dni: any;
-  listIncentivos: IIncentivoPago[] = [];
+  listIncentivos: IIncentivoVista[] = [];
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -32,7 +33,7 @@ export class IncentivosComponent {
 
   getIncentivos(): void {
     this._incentivosServices.getIncentivosConfirmationFalse(this.dni).subscribe(
-      (data: IIncentivoPago[]) => {
+      (data: IIncentivoVista[]) => {
         if (data.length === 0) {
           this.toastr.warning('No se encontraron incentivos a su nombre.', 'SIN INCENTIVOS');
           // Redirigir al login de incentivos
@@ -55,50 +56,84 @@ export class IncentivosComponent {
   }
 
   // Función que se ejecuta cuando se presiona el botón "Aceptar" para un incentivo
-  onAceptar(incentivo: IIncentivoPago): void {
+  // onAceptar(incentivo: IIncentivoVista): void {
+  //   Swal.fire({
+  //     title: '¿Estas seguro de confirmar la entrega?',
+  //     text: 'Al aceptar estas confirmando que se te fue entregado el premio de tus incentivos y asumes la total responsabilidad',
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     confirmButtonText: 'Sí, aceptar bajo mi responsabilidad',
+  //     cancelButtonText: 'Cancelar'
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       //incentivo.ConfirmacionEntrega = true;
+  //       incentivo.aceptado = true; // Establecer el incentivo como aceptado
+  //       Swal.fire({
+  //         title: '¡Aceptado!',
+  //         text: 'Has aceptado el incentivo bajo tu responsabilidad.',
+  //         icon: 'success',
+  //         timer: 2000,
+  //         timerProgressBar: true
+  //       });
+  //     }
+  //   });
+  // }
+  onAceptar(incentivo: IIncentivoVista): void {
     Swal.fire({
-      title: '¡ADVERTENCIA!',
-      text: 'Al aceptar este incentivo, asume la total responsabilidad. Cualquier reclamo futuro será ignorado y no nos haremos responsables por las consecuencias.',
+      title: '¿Estas seguro de confirmar la entrega?',
+      text: 'Al aceptar estas confirmando que se te fue entregado el premio de tus incentivos y asumes la total responsabilidad',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, aceptar bajo mi responsabilidad',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        incentivo.ConfirmacionEntrega = true;
-        incentivo.aceptado = true; // Establecer el incentivo como aceptado
-        Swal.fire({
-          title: '¡Aceptado!',
-          text: 'Has aceptado el incentivo bajo tu responsabilidad.',
-          icon: 'success',
-          timer: 2000,
-          timerProgressBar: true
-        });
+        this._incentivosServices.UpdateIncentivoswithDNI(incentivo.dniPromotor, incentivo.id).subscribe(
+          () => {
+            incentivo.aceptado = true; // Establecer el incentivo como aceptado
+            Swal.fire({
+              title: '¡Aceptado!',
+              text: 'Has aceptado el incentivo bajo tu responsabilidad.',
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true
+            });
+          },
+          (error) => {
+            console.error(error);
+            Swal.fire({
+              title: 'Error',
+              text: 'Hubo un error al aceptar el incentivo. Por favor, intenta nuevamente.',
+              icon: 'error',
+              timer: 2000,
+              timerProgressBar: true
+            });
+          }
+        );
       }
     });
   }
 
 
-
   // Función que verifica si todos los incentivos han sido aceptados
-  todosAceptados(): boolean {
-    return this.listIncentivos.every(incentivo => incentivo.ConfirmacionEntrega);
-  }
+  // todosAceptados(): boolean {
+  //   return this.listIncentivos.every(incentivo => incentivo.estadoIncentivo);
+  // }
 
-  updateIncentivos(): void {
-    if (!this.todosAceptados()) {
-      this.toastr.warning('Debe aceptar la entrega de los incentivos.', 'PRESIONA EN EL CHECK');
-      return;
-    }
+  // updateIncentivos(): void {
+  //   if (!this.todosAceptados()) {
+  //     this.toastr.warning('Debe aceptar la entrega de los incentivos.', 'PRESIONA EN EL CHECK');
+  //     return;
+  //   }
 
-    this._incentivosServices.UpdateIncentivoswithDNI(this.dni).subscribe(
-      (data: IIncentivoPago[]) => {
-        this.toastr.success('Los incentivos se le han entregado correctamente.', 'Éxito');
-        this._router.navigate(['/incentivosLogin']); // Ajusta la ruta correcta hacia el login
-      },
-      (error) => {
-        console.error('Error al actualizar incentivos:', error);
-      }
-    );
-  }
+  //   this._incentivosServices.UpdateIncentivoswithDNI(this.dni).subscribe(
+  //     (data: IIncentivoPago[]) => {
+  //       this.toastr.success('Los incentivos se le han entregado correctamente.', 'Éxito');
+  //       this._router.navigate(['/incentivosLogin']); // Ajusta la ruta correcta hacia el login
+  //     },
+  //     (error) => {
+  //       console.error('Error al actualizar incentivos:', error);
+  //     }
+  //   );
+  // }
 }

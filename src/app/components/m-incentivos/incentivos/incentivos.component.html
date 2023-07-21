@@ -58,9 +58,15 @@
       <table class="table custom-table">
         <thead>
           <tr>
-            <th>Descripción</th>
+            <th>ID</th>
+            <th>Periodo Incentivo</th>
+            <th>DNI Promotor</th>
+            <th>Nombre Completo</th>
+            <th>ID Incentivo</th>
+            <th>Nombre Incentivo</th>
             <th>Empresa</th>
             <th>Monto</th>
+            <th>Estado Incentivo</th>
             <th>Confirmación de Entrega</th>
             <th>Aceptar</th>
 
@@ -68,11 +74,17 @@
         </thead>
         <tbody>
           <tr *ngFor="let incentivo of listIncentivos">
-            <td>{{ incentivo.descripcion }}</td>
-            <td>{{ incentivo.empresa }}</td>
-            <td>{{ incentivo.monto }}</td>
-            <td>{{ incentivo.ConfirmacionEntrega ? "Sí" : "No" }}</td>
-            <td>
+            <td>{{ incentivo.id }}</td>
+              <td>{{ incentivo.periodoIncentivo }}</td>
+              <td>{{ incentivo.dniPromotor }}</td>
+              <td>{{ incentivo.nombreCompleto }}</td>
+              <td>{{ incentivo.idIncentivo }}</td>
+              <td>{{ incentivo.nombreIncentivo }}</td>
+              <td>{{ incentivo.empresa }}</td>
+              <td>{{ incentivo.monto }}</td>
+              <td>{{ incentivo.estadoIncentivo }}</td>
+              <td>{{ incentivo.aceptado ? "Sí" : "No" }}</td>
+              <td>
               <!-- Botón "Aceptar" para cada elemento -->
               <button type="button" class="btn btn-success" (click)="onAceptar(incentivo)" [disabled]="incentivo.aceptado">
                 Aceptar
@@ -88,9 +100,8 @@
       <label for="checkbox"> <strong>⬅️Acepta la entrega de los Incentivos</strong></label>
     </div> -->
 
-    <div class="custom-button">
-      <!-- El botón "Enviar" estará deshabilitado inicialmente -->
+    <!-- <div class="custom-button">
       <button type="button" class="btn btn-primary" style="padding: 10px; font-size: 30px;" (click)="updateIncentivos()" [disabled]="!todosAceptados()">Enviar</button>
-    </div>
+    </div> -->
   </div>
 </div>
