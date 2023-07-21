@@ -24,10 +24,32 @@ export class IncentivosComponent {
     private _router: Router
   ) {}
 
+  // ngOnInit(): void {
+  //   this._activatedRoute.queryParams.subscribe(params => {
+  //     this.dni = params['dni'];
+  //     this.getIncentivos();
+  //   });
+  // }
   ngOnInit(): void {
     this._activatedRoute.queryParams.subscribe(params => {
       this.dni = params['dni'];
-      this.getIncentivos();
+
+      // Llamar al método de logeo del servicio IncentivosService para obtener el token
+      this._incentivosServices.login(this.dni).subscribe(
+        response => {
+          // El token se ha almacenado en el servicio IncentivosService.
+          console.log('Token JWT:', response.result);
+          // Obtener los incentivos después de obtener el token
+          this.getIncentivos();
+        },
+        error => {
+          console.error('Error al iniciar sesión:', error);
+          // Mostrar mensaje de error al usuario si ocurre algún problema con el logeo.
+          this.toastr.error('Hubo un problema al iniciar sesión. Por favor, inténtalo nuevamente.', 'Error de Inicio de Sesión');
+          // Redirigir al login de incentivos
+          this._router.navigate(['/incentivosLogin']);
+        }
+      );
     });
   }
 
@@ -55,29 +77,6 @@ export class IncentivosComponent {
     );
   }
 
-  // Función que se ejecuta cuando se presiona el botón "Aceptar" para un incentivo
-  // onAceptar(incentivo: IIncentivoVista): void {
-  //   Swal.fire({
-  //     title: '¿Estas seguro de confirmar la entrega?',
-  //     text: 'Al aceptar estas confirmando que se te fue entregado el premio de tus incentivos y asumes la total responsabilidad',
-  //     icon: 'warning',
-  //     showCancelButton: true,
-  //     confirmButtonText: 'Sí, aceptar bajo mi responsabilidad',
-  //     cancelButtonText: 'Cancelar'
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       //incentivo.ConfirmacionEntrega = true;
-  //       incentivo.aceptado = true; // Establecer el incentivo como aceptado
-  //       Swal.fire({
-  //         title: '¡Aceptado!',
-  //         text: 'Has aceptado el incentivo bajo tu responsabilidad.',
-  //         icon: 'success',
-  //         timer: 2000,
-  //         timerProgressBar: true
-  //       });
-  //     }
-  //   });
-  // }
   onAceptar(incentivo: IIncentivoVista): void {
     Swal.fire({
       title: '¿Estas seguro de confirmar la entrega?',
@@ -115,25 +114,5 @@ export class IncentivosComponent {
   }
 
 
-  // Función que verifica si todos los incentivos han sido aceptados
-  // todosAceptados(): boolean {
-  //   return this.listIncentivos.every(incentivo => incentivo.estadoIncentivo);
-  // }
 
-  // updateIncentivos(): void {
-  //   if (!this.todosAceptados()) {
-  //     this.toastr.warning('Debe aceptar la entrega de los incentivos.', 'PRESIONA EN EL CHECK');
-  //     return;
-  //   }
-
-  //   this._incentivosServices.UpdateIncentivoswithDNI(this.dni).subscribe(
-  //     (data: IIncentivoPago[]) => {
-  //       this.toastr.success('Los incentivos se le han entregado correctamente.', 'Éxito');
-  //       this._router.navigate(['/incentivosLogin']); // Ajusta la ruta correcta hacia el login
-  //     },
-  //     (error) => {
-  //       console.error('Error al actualizar incentivos:', error);
-  //     }
-  //   );
-  // }
 }
