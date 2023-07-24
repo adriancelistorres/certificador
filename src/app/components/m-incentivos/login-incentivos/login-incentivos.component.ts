@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { IIncentivoPago } from 'src/app/interfaces/IIncentivosPago';
 import { IncentivosService } from 'src/app/services/incentivos.service';
 import { Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -17,43 +19,48 @@ export class LoginIncentivosComponent {
 
   constructor(
     private _incentivosServices: IncentivosService,
-    private _router: Router
+    private _router: Router,
+    private toastr: ToastrService,
 
 
   ){}
 
-  // login(event:Event): void {
-  //   event?.preventDefault();
-  //   console.log(this.dni.value)
-  //   this._router.navigate(['/incentivos'], { queryParams: { dni: this.dni.value } });
-  // }
+
   login(event: Event): void {
     event.preventDefault();
 
-    // Validar el campo DNI
     if (this.dni.invalid || this.dni.value === null) {
       return;
     }
 
-
-    // Obtener el valor del DNI ingresado
     const dniValue = this.dni.value;
-
-    // Llamar al método de logeo del servicio IncentivosService para obtener el token
     this._incentivosServices.login(dniValue).subscribe(
       response => {
-        // El token se ha almacenado en el servicio IncentivosService.
         console.log('Token JWT:', response.result);
 
-        // Redirigir a la página de incentivos con el DNI como parámetro en la URL
         this._router.navigate(['/incentivos'], { queryParams: { dni: dniValue } });
       },
       error => {
         console.error('Error al iniciar sesión:', error);
-        // Aquí puedes mostrar un mensaje de error al usuario si ocurre algún problema con el logeo.
+
+        if (error && error.error === "No tiene registros") {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de inicio de sesión',
+            text: 'No tiene Incentivos cargados a su nombre'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de inicio de sesión',
+            text: 'Hubo un error al iniciar sesión. Por favor, intenta nuevamente.'
+          });
+        }
       }
     );
   }
+
+
 
 onlyNumbers(event: KeyboardEvent): void {
     const keyCode = event.keyCode;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IIncentivoPagoRequest } from 'src/app/interfaces/IIncentivoPagoReques';
 import { IIncentivoPago } from 'src/app/interfaces/IIncentivosPago';
@@ -24,29 +24,19 @@ export class IncentivosComponent {
     private _router: Router
   ) {}
 
-  // ngOnInit(): void {
-  //   this._activatedRoute.queryParams.subscribe(params => {
-  //     this.dni = params['dni'];
-  //     this.getIncentivos();
-  //   });
-  // }
+
   ngOnInit(): void {
     this._activatedRoute.queryParams.subscribe(params => {
       this.dni = params['dni'];
 
-      // Llamar al método de logeo del servicio IncentivosService para obtener el token
       this._incentivosServices.login(this.dni).subscribe(
         response => {
-          // El token se ha almacenado en el servicio IncentivosService.
           console.log('Token JWT:', response.result);
-          // Obtener los incentivos después de obtener el token
           this.getIncentivos();
         },
         error => {
           console.error('Error al iniciar sesión:', error);
-          // Mostrar mensaje de error al usuario si ocurre algún problema con el logeo.
           this.toastr.error('Hubo un problema al iniciar sesión. Por favor, inténtalo nuevamente.', 'Error de Inicio de Sesión');
-          // Redirigir al login de incentivos
           this._router.navigate(['/incentivosLogin']);
         }
       );
@@ -58,7 +48,6 @@ export class IncentivosComponent {
       (data: IIncentivoVista[]) => {
         if (data.length === 0) {
           this.toastr.warning('No se encontraron incentivos a su nombre.', 'SIN INCENTIVOS');
-          // Redirigir al login de incentivos
           this._router.navigate(['/incentivosLogin']);
         } else {
           this.listIncentivos = data;
@@ -97,6 +86,8 @@ export class IncentivosComponent {
               timer: 2000,
               timerProgressBar: true
             });
+            this.updateIncentivosList();
+
           },
           (error) => {
             console.error(error);
@@ -113,6 +104,30 @@ export class IncentivosComponent {
     });
   }
 
+  // Método para actualizar la lista de incentivos después de aceptar
+updateIncentivosList(): void {
+  this._incentivosServices.getIncentivosConfirmationFalse(this.dni).subscribe(
+    (data: IIncentivoVista[]) => {
+      if (data.length === 0) {
+        // Si la lista está vacía, mostrar mensaje y redirigir al login de incentivos
+        this.toastr.warning('Ya no tienes incentivos cargados.', 'SIN INCENTIVOS');
+        this._router.navigate(['/incentivosLogin']);
+      } else {
+        this.listIncentivos = data;
+      }
+    },
+    (error) => {
+      console.error(error);
+      if (error.status === 400 && error.error && error.error.errors) {
+        console.log('Errores de validación:', error.error.errors);
+      } else {
+        console.log('Error:', error.message);
+      }
+    }
+  );
+}
 
 
 }
+
+
