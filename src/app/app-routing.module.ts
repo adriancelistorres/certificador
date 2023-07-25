@@ -4,12 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { LoginIncentivosComponent } from './components/m-incentivos/login-incentivos/login-incentivos.component';
 import { IncentivosComponent } from './components/m-incentivos/incentivos/incentivos.component';
+import { GuardianGuard } from './shared/guards/guardian.guard';
 
 
 
 const routes: Routes = [
   { path: 'incentivosLogin', component: LoginIncentivosComponent },
-  { path: 'incentivos', component: IncentivosComponent },
+  { path: 'incentivos', component: IncentivosComponent,canActivate :[GuardianGuard]},
   { path: '', redirectTo: '/incentivosLogin', pathMatch: 'full' },
 ];
 

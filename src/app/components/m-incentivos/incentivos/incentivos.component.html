@@ -46,8 +46,12 @@
         style="max-width: 200px"
       />
     </div>
+    <div class="btn-container">
+      <button class="btn btn-danger" (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
   </div>
 </div>
+
 
 <div class="background-container">
   <div class="container">
@@ -95,13 +99,5 @@
       </table>
     </div>
 
-    <!-- <div class="custom-checkbox">
-      <input type="checkbox"  id="checkbox" [(ngModel)]="isCheckboxChecked" />
-      <label for="checkbox"> <strong>⬅️Acepta la entrega de los Incentivos</strong></label>
-    </div> -->
-
-    <!-- <div class="custom-button">
-      <button type="button" class="btn btn-primary" style="padding: 10px; font-size: 30px;" (click)="updateIncentivos()" [disabled]="!todosAceptados()">Enviar</button>
-    </div> -->
   </div>
 </div>

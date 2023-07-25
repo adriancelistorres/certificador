@@ -8,7 +8,6 @@ import {
 } from '@angular/router';
 import { CookieService } from 'node_modules/ngx-cookie-service';
 import { Observable } from 'rxjs';
-import { LoginService } from 'src/app/services/login.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +16,7 @@ export class GuardianGuard implements CanActivate {
   constructor(private cookiesService: CookieService, private router: Router) {}
   redirect(flag: boolean): any {
     if(!flag){
-       this.router.navigate(['/', 'login']);
+       this.router.navigate(['/', 'incentivosLogin']);
     }
 
   }

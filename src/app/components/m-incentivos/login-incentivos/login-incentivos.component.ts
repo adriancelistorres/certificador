@@ -6,6 +6,8 @@ import { IncentivosService } from 'src/app/services/incentivos.service';
 import { Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { AuthRedirectService } from 'src/app/auth/auth-redirect.service';
+import { CookieService } from 'node_modules/ngx-cookie-service';
 
 
 @Component({
@@ -21,13 +23,18 @@ export class LoginIncentivosComponent {
     private _incentivosServices: IncentivosService,
     private _router: Router,
     private toastr: ToastrService,
+    private cookieService: CookieService,
 
 
   ){}
 
+  ngOnInit(): void {
+    // Verificar si el token ha expirado al cargar el componente
+  }
 
   login(event: Event): void {
     event.preventDefault();
+
 
     if (this.dni.invalid || this.dni.value === null) {
       return;
@@ -37,8 +44,10 @@ export class LoginIncentivosComponent {
     this._incentivosServices.login(dniValue).subscribe(
       response => {
         console.log('Token JWT:', response.result);
+        this.cookieService.set('token', response.result);
 
         this._router.navigate(['/incentivos'], { queryParams: { dni: dniValue } });
+
       },
       error => {
         console.error('Error al iniciar sesión:', error);
@@ -69,4 +78,5 @@ onlyNumbers(event: KeyboardEvent): void {
     }
   }
 
+ 
 }
