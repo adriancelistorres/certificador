@@ -1,4 +1,4 @@
-<style>
+<!-- <style>
   .background-container {
     background-color: #ff455c;
     align-items: center;
@@ -35,7 +35,43 @@
     display: flex;
     justify-content: center;
   }
-</style>
+
+ /* Estilos para el elemento select */
+select {
+  /* Tamaño y relleno */
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  max-width: 300px; /* Tamaño máximo */
+  width: 100%; /* Ajustar el ancho al 100% en dispositivos pequeños */
+  box-sizing: border-box; /* Incluir el relleno y el borde en el tamaño total */
+
+  /* Estilos adicionales para mejorar la apariencia */
+  outline: none; /* Eliminar el contorno al hacer clic */
+  transition: border-color 0.2s ease-in-out; /* Animación de transición */
+}
+
+/* Estilos para cuando se coloca el cursor en el elemento select */
+select:hover {
+  border-color: #666; /* Cambiar el color del borde al pasar el cursor */
+}
+
+/* Estilos para cuando el elemento select está enfocado */
+select:focus {
+  border-color: #4285f4; /* Cambiar el color del borde cuando está enfocado */
+}
+
+/* Estilos personalizados para el elemento select en dispositivos pequeños */
+@media (max-width: 576px) {
+  select {
+    max-width: none; /* Eliminar el ancho máximo */
+  }
+}
+
+</style> -->
 <div class="navbar">
   <div class="container" style="padding: 10px">
     <div class="logo-container">
@@ -52,12 +88,25 @@
   </div>
 </div>
 
-
 <div class="background-container">
   <div class="container">
     <br>
     <br>
     <h2 style="color: rgb(245, 245, 245);">Tabla de Incentivos</h2>
+    <div class="custom-search">
+      <!-- <input type="text" [(ngModel)]="searchTerm" (input)="filtrarIncentivos()" placeholder="Buscar"> -->
+    </div>
+    <select class="custom-select" name="select" [(ngModel)]="selectedPeriodo" (change)="filtrarIncentivos()">
+      <option value="">Todo</option>
+      <option *ngFor="let periodo of periodos" [value]="periodo">{{ periodo }}</option>
+    </select>
+
+
+    <!-- ... Resto del código ... -->
+  </div>
+  <div class="container">
+    <br>
+    <br>
     <div class="table-responsive">
       <table class="table custom-table">
         <thead>
@@ -68,7 +117,7 @@
             <th>Nombre Completo</th>
             <th>ID Incentivo</th>
             <th>Nombre Incentivo</th>
-            <th>Empresa</th>
+            <th>Tipo Incentivo</th>
             <th>Monto</th>
             <th>Estado Incentivo</th>
             <th>Confirmación de Entrega</th>

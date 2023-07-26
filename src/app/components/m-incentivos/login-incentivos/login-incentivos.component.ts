@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IIncentivoPago } from 'src/app/interfaces/IIncentivosPago';
@@ -15,26 +15,23 @@ import { CookieService } from 'node_modules/ngx-cookie-service';
   templateUrl: './login-incentivos.component.html',
   styleUrls: ['./login-incentivos.component.css']
 })
-export class LoginIncentivosComponent {
+export class LoginIncentivosComponent implements OnInit {
   listIncentivos: IIncentivoPago[] = [];
-  dni=new FormControl('',[Validators?.pattern('[0-9]*')]);
+  dni = new FormControl('', [Validators?.pattern('[0-9]*')]);
 
   constructor(
     private _incentivosServices: IncentivosService,
     private _router: Router,
-    private toastr: ToastrService,
-    private cookieService: CookieService,
-
-
-  ){}
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     // Verificar si el token ha expirado al cargar el componente
+    localStorage.removeItem('token'); // Borra el token al cargar la página del inicio de sesión
   }
 
   login(event: Event): void {
     event.preventDefault();
-
 
     if (this.dni.invalid || this.dni.value === null) {
       return;
@@ -44,7 +41,7 @@ export class LoginIncentivosComponent {
     this._incentivosServices.login(dniValue).subscribe(
       response => {
         console.log('Token JWT:', response.result);
-        this.cookieService.set('token', response.result);
+        localStorage.setItem('token', response.result); // Establecer el token en el localStorage
 
         this._router.navigate(['/incentivos'], { queryParams: { dni: dniValue } });
 
@@ -69,14 +66,13 @@ export class LoginIncentivosComponent {
     );
   }
 
-
-
-onlyNumbers(event: KeyboardEvent): void {
+  onlyNumbers(event: KeyboardEvent): void {
     const keyCode = event.keyCode;
     if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
       event.preventDefault();
     }
   }
 
- 
+
+
 }

@@ -13,24 +13,20 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class GuardianGuard implements CanActivate {
-  constructor(private cookiesService: CookieService, private router: Router) {}
-  redirect(flag: boolean): any {
-    if(!flag){
-       this.router.navigate(['/', 'incentivosLogin']);
-    }
+  constructor(private router: Router) { }
 
-  }
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
-    const cookie = this.cookiesService.check('token');
-    this.redirect(cookie);
+  ): boolean | UrlTree {
+    const token = localStorage.getItem('token');
 
-    return cookie;
+    if (!token) {
+      // Si no hay token en el localStorage, redirige a la página de inicio de sesión
+      return this.router.parseUrl('/incentivosLogin');
+    }
+
+    // Si hay token en el localStorage, permite el acceso a la ruta
+    return true;
   }
 }

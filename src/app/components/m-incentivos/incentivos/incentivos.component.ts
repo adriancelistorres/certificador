@@ -18,6 +18,11 @@ import { CookieService } from 'ngx-cookie-service';
 export class IncentivosComponent {
   dni: any;
   listIncentivos: IIncentivoVista[] = [];
+  searchTerm: string = ''; // Variable para almacenar el término de búsqueda
+  selectedPeriodo: string = ''; // Valor predeterminado seleccionado en el combobox
+  periodos: string[] = []; // Variable para almacenar la lista de periodos disponibles
+  listIncentivosOriginal: IIncentivoVista[] = []; // Variable para mantener una copia de los incentivos sin filtrar
+
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -25,6 +30,7 @@ export class IncentivosComponent {
     private toastr: ToastrService,
     private _router: Router,
     private cookieService: CookieService // Inyecta el CookieService
+
   ) {}
 
   ngOnInit(): void {
@@ -57,9 +63,12 @@ export class IncentivosComponent {
           //this.toastr.warning('No se encontraron incentivos a su nombre.', 'SIN INCENTIVOS');
           this._router.navigate(['/incentivosLogin']);
         } else {
-          this.listIncentivos = data;
+          this.listIncentivosOriginal = data; // Almacena la lista original sin filtrar
+          this.listIncentivos = data; // Establece la lista filtrada inicialmente
           console.log('DATA', this.listIncentivos);
           console.log('DATA', data);
+          this.periodos = this.extractUniquePeriods(data);
+
         }
       },
       (error) => {
@@ -72,6 +81,30 @@ export class IncentivosComponent {
       }
     );
   }
+
+  filtrarIncentivos(): void {
+    // Si no se ha seleccionado un período (o se ha seleccionado "Todo"), muestra todos los incentivos sin filtrar
+    if (!this.selectedPeriodo) {
+      this.listIncentivos = this.listIncentivosOriginal;
+      return;
+    }
+
+    // Filtra los incentivos según el período seleccionado
+    this.listIncentivos = this.listIncentivosOriginal.filter((incentivo) => {
+      return incentivo.periodoIncentivo === this.selectedPeriodo;
+    });
+  }
+  extractUniquePeriods(incentivos: IIncentivoVista[]): string[] {
+    const periodosSet = new Set<string>();
+    for (const incentivo of incentivos) {
+      periodosSet.add(incentivo.periodoIncentivo);
+    }
+    console.log(periodosSet)
+
+    return Array.from(periodosSet);
+  }
+
+
 
   onAceptar(incentivo: IIncentivoVista): void {
     Swal.fire({
@@ -118,15 +151,24 @@ export class IncentivosComponent {
       (data: IIncentivoVista[]) => {
         if (data.length === 0) {
           // Si la lista está vacía, mostrar mensaje y redirigir al login de incentivos
-          this.toastr.warning(
-            'Ya no tienes incentivos cargados.',
-            'SIN INCENTIVOS'
-          );
+          this.toastr.warning('Ya no tienes incentivos cargados.', 'SIN INCENTIVOS');
           this._router.navigate(['/incentivosLogin']);
         } else {
-          this.listIncentivos = data;
+          // Actualizar la lista de incentivos original sin filtrar
+          this.listIncentivosOriginal = data;
+
+          // Aplicar el filtro solo si hay un período seleccionado
+          if (this.selectedPeriodo) {
+            this.listIncentivos = this.listIncentivosOriginal.filter((incentivo) => {
+              return incentivo.periodoIncentivo === this.selectedPeriodo;
+            });
+          } else {
+            // Si no hay un período seleccionado (o se seleccionó "Todo"), mostrar todos los incentivos sin filtrar
+            this.listIncentivos = this.listIncentivosOriginal;
+          }
         }
       },
+
       (error) => {
         console.error(error);
         if (error.status === 400 && error.error && error.error.errors) {
@@ -138,7 +180,9 @@ export class IncentivosComponent {
     );
   }
   checkTokenExpiration(): void {
-    const token = this.cookieService.get('token'); // Obtener el token del cookie
+    //const token = this.cookieService.get('token'); // Obtener el token del cookie
+    const token = localStorage.getItem('token'); // Obtener el token del localStorage
+
     if (!token) {
       // No hay token, redirigir a la página de inicio de sesión
       this._router.navigate(['/incentivosLogin']);
@@ -186,9 +230,14 @@ export class IncentivosComponent {
 
   cerrarSesion(): void {
     // Borrar la cookie
-    this.cookieService.delete('token');
+    //this.cookieService.delete('token');
+    localStorage.removeItem('token');
 
     // Redirigir al login
     this._router.navigate(['/incentivosLogin']);
   }
+
+
+
+
 }
