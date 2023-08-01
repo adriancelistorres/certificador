@@ -22,6 +22,7 @@ export class IncentivosComponent {
   selectedPeriodo: string = ''; // Valor predeterminado seleccionado en el combobox
   periodos: string[] = []; // Variable para almacenar la lista de periodos disponibles
   listIncentivosOriginal: IIncentivoVista[] = []; // Variable para mantener una copia de los incentivos sin filtrar
+  token?:string=''; // Variable para almacenar el token
 
 
   constructor(
@@ -34,25 +35,16 @@ export class IncentivosComponent {
   ) {}
 
   ngOnInit(): void {
+    this.token = localStorage.getItem('token')!;
+    console.log('token',localStorage.getItem('token'))
     this._activatedRoute.queryParams.subscribe((params) => {
       this.dni = params['dni'];
 
-      this._incentivosServices.login(this.dni).subscribe(
-        (response) => {
-          console.log('Token JWT:', response.result);
-          this.checkTokenExpiration();
+      // Aquí solo verificamos si el token está presente en el localStorage
+      this.checkTokenExpiration();
 
-          this.getIncentivos();
-        },
-        (error) => {
-          console.error('Error al iniciar sesión:', error);
-          this.toastr.error(
-            'Hubo un problema al iniciar sesión. Por favor, inténtalo nuevamente.',
-            'Error de Inicio de Sesión'
-          );
-          this._router.navigate(['/incentivosLogin']);
-        }
-      );
+      // Luego, obtenemos los incentivos asociados al DNI del usuario
+      this.getIncentivos();
     });
   }
 
@@ -60,7 +52,7 @@ export class IncentivosComponent {
     this._incentivosServices.getIncentivosConfirmationFalse(this.dni).subscribe(
       (data: IIncentivoVista[]) => {
         if (data.length === 0) {
-          //this.toastr.warning('No se encontraron incentivos a su nombre.', 'SIN INCENTIVOS');
+          this.toastr.warning('No se encontraron incentivos a su nombre.', 'SIN INCENTIVOS');
           this._router.navigate(['/incentivosLogin']);
         } else {
           this.listIncentivosOriginal = data; // Almacena la lista original sin filtrar

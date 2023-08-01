@@ -17,7 +17,9 @@ import { CookieService } from 'node_modules/ngx-cookie-service';
 })
 export class LoginIncentivosComponent implements OnInit {
   listIncentivos: IIncentivoPago[] = [];
-  dni = new FormControl('', [Validators?.pattern('[0-9]*')]);
+  usuario: string = ''; // Variable para capturar el usuario
+  clave: string = '';   // Variable para capturar la contraseña
+
 
   constructor(
     private _incentivosServices: IncentivosService,
@@ -30,30 +32,62 @@ export class LoginIncentivosComponent implements OnInit {
     localStorage.removeItem('token'); // Borra el token al cargar la página del inicio de sesión
   }
 
+  // login(event: Event): void {
+  //   event.preventDefault();
+
+  //   if (this.dni.invalid || this.dni.value === null) {
+  //     return;
+  //   }
+
+  //   const dniValue = this.dni.value;
+  //   this._incentivosServices.login(dniValue).subscribe(
+  //     response => {
+  //       console.log('Token JWT:', response.result);
+  //       localStorage.setItem('token', response.result); // Establecer el token en el localStorage
+
+  //       this._router.navigate(['/incentivos'], { queryParams: { dni: dniValue } });
+
+  //     },
+  //     error => {
+  //       console.error('Error al iniciar sesión:', error);
+
+  //       if (error && error.error === "No tiene registros") {
+  //         Swal.fire({
+  //           icon: 'error',
+  //           title: 'Error de inicio de sesión',
+  //           text: 'No tiene Incentivos cargados a su nombre'
+  //         });
+  //       } else {
+  //         Swal.fire({
+  //           icon: 'error',
+  //           title: 'Error de inicio de sesión',
+  //           text: 'Hubo un error al iniciar sesión. Por favor, intenta nuevamente.'
+  //         });
+  //       }
+  //     }
+  //   );
+  // }
+
   login(event: Event): void {
     event.preventDefault();
 
-    if (this.dni.invalid || this.dni.value === null) {
+    if (!this.usuario || !this.clave) {
       return;
     }
 
-    const dniValue = this.dni.value;
-    this._incentivosServices.login(dniValue).subscribe(
-      response => {
-        console.log('Token JWT:', response.result);
-        localStorage.setItem('token', response.result); // Establecer el token en el localStorage
-
-        this._router.navigate(['/incentivos'], { queryParams: { dni: dniValue } });
-
+    this._incentivosServices.login(this.usuario, this.clave).subscribe(
+      () => {
+        // Redirigir al componente de incentivos con el dni en los queryParams
+        this._router.navigate(['/incentivos'], { queryParams: { dni: this.usuario } });
       },
       error => {
         console.error('Error al iniciar sesión:', error);
 
-        if (error && error.error === "No tiene registros") {
+        if (error && error.error === "Usuario no encontrado o datos inválidos.") {
           Swal.fire({
             icon: 'error',
             title: 'Error de inicio de sesión',
-            text: 'No tiene Incentivos cargados a su nombre'
+            text: 'Usuario no encontrado o datos inválidos.'
           });
         } else {
           Swal.fire({

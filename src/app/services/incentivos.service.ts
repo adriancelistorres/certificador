@@ -21,19 +21,31 @@ export class IncentivosService {
 
   }
 
-  login(dni: string): Observable<any> {
-    const request: IIncentivoPagoRequest = { Dni: dni };
-    return this.http.post<any>(this.apiUrl + 'login', request).pipe(
+  // login(dni: string): Observable<any> {
+  //   const request: IIncentivoPagoRequest = { Dni: dni };
+  //   return this.http.post<any>(this.apiUrl + 'login', request).pipe(
+  //     tap(response => {
+  //       this.token = response.result;
+  //       console.log(this.token)
+  //     })
+  //   );
+  // }
+  login(usuario: string, clave: string): Observable<any> {
+    const request:IIncentivoPagoRequest = { USUARIO: usuario, CLAVE: clave }; // Cambiar según el formato de tu DTO de usuario
+
+    return this.http.post<any>(this.apiUrl + 'validateUser', request).pipe(
       tap(response => {
-        this.token = response.result;
-        console.log(this.token)
+        const token = response.token;
+        console.log('Token JWT:', token);
+        localStorage.setItem('token', token); // Establecer el token en el localStorage
       })
     );
   }
 
   getIncentivosConfirmationFalse(dni: any): Observable<IIncentivoVista[]> {
     // Añadir el token en la cabecera "Authorization" de la solicitud
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    console.log('tokken',this.token)
     const request: IIncentivoPagoRequest = { Dni: dni };
     return this.http.post<IIncentivoVista[]>(this.apiUrl + 'GeneralWithDNIConfirmationFalse', request, { headers });
   }
@@ -42,7 +54,8 @@ export class IncentivosService {
 
   UpdateIncentivoswithDNI(dni: any, id: any): Observable<IIncentivoVista[]> {
     // Añadir el token en la cabecera "Authorization" de la solicitud
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    console.log('tokkenupdate',this.token)
     const request: IIncentivoPagoRequest = { Dni: dni, Id: id };
     return this.http.post<IIncentivoVista[]>(this.apiUrl + 'UpdateWithDNI', request, { headers });
   }

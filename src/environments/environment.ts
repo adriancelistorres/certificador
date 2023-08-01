@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  endpoint: 'https://localhost:7117/',
+  endpoint: 'https://intranet.grupotawa.com/incentivosrom/',
   //  firebaseConfig : {
   //   apiKey: "AIzaSyCYjoNRGh2G1u05PmHFNrWos31F9KNHiSU",
   //   authDomain: "temptationproject-85bb8.firebaseapp.com",
