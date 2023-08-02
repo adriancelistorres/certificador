@@ -36,7 +36,7 @@ export class IncentivosComponent {
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token')!;
-    console.log('token',localStorage.getItem('token'))
+    // console.log('token',localStorage.getItem('token'))
     this._activatedRoute.queryParams.subscribe((params) => {
       this.dni = params['dni'];
 
@@ -57,8 +57,8 @@ export class IncentivosComponent {
         } else {
           this.listIncentivosOriginal = data; // Almacena la lista original sin filtrar
           this.listIncentivos = data; // Establece la lista filtrada inicialmente
-          console.log('DATA', this.listIncentivos);
-          console.log('DATA', data);
+          // console.log('DATA', this.listIncentivos);
+          // console.log('DATA', data);
           this.periodos = this.extractUniquePeriods(data);
 
         }
@@ -91,7 +91,7 @@ export class IncentivosComponent {
     for (const incentivo of incentivos) {
       periodosSet.add(incentivo.periodoIncentivo);
     }
-    console.log(periodosSet)
+    // console.log(periodosSet)
 
     return Array.from(periodosSet);
   }
@@ -185,7 +185,7 @@ export class IncentivosComponent {
     const tokenParts = token.split('.');
     if (tokenParts.length === 3) {
       const payload = JSON.parse(atob(tokenParts[1]));
-      console.log('PAYLOAD HOUR', payload);
+      // console.log('PAYLOAD HOUR', payload);
       const expirationTime = payload.exp * 1000; // Multiplica por 1000 para convertir a milisegundos
 
       // Calcular el tiempo restante hasta la expiración del token
@@ -194,7 +194,7 @@ export class IncentivosComponent {
 
       if (timeRemaining <= 0) {
         // Token expirado, redirigir a la página de inicio de sesión y borrar la cookie
-        this.cookieService.delete('token');
+        localStorage.removeItem('token');
         this._router.navigate(['/incentivosLogin']);
         return;
       }
@@ -202,7 +202,7 @@ export class IncentivosComponent {
       // Programar un redireccionamiento al tiempo de expiración del token
       setTimeout(() => {
         // Token expirado, borrar la cookie y redirigir al inicio de sesión
-        this.cookieService.delete('token');
+        localStorage.removeItem('token');
         this.showSessionExpiredAlert();
 
         this._router.navigate(['/incentivosLogin']);

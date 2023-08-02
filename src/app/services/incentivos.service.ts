@@ -36,7 +36,7 @@ export class IncentivosService {
     return this.http.post<any>(this.apiUrl + 'validateUser', request).pipe(
       tap(response => {
         const token = response.token;
-        console.log('Token JWT:', token);
+        // console.log('Token JWT:', token);
         localStorage.setItem('token', token); // Establecer el token en el localStorage
       })
     );
@@ -45,7 +45,7 @@ export class IncentivosService {
   getIncentivosConfirmationFalse(dni: any): Observable<IIncentivoVista[]> {
     // Añadir el token en la cabecera "Authorization" de la solicitud
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
-    console.log('tokken',this.token)
+    // console.log('tokken',this.token)
     const request: IIncentivoPagoRequest = { Dni: dni };
     return this.http.post<IIncentivoVista[]>(this.apiUrl + 'GeneralWithDNIConfirmationFalse', request, { headers });
   }
