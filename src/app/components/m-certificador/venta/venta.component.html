@@ -1,0 +1,88 @@
+<div class="container">
+  <button class="btn btn-primary" (click)="modalCrearCategoria.style.display = 'block'">Crear Categoría</button>
+
+    <h2>Listado de Ventas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>ID Cliente</th>
+          <th>Total de Productos</th>
+          <th>Total</th>
+          <th>Contacto</th>
+          <th>ID Localidad</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+          <th>ID Transacción</th>
+          <th>Fecha de Venta</th>
+          <th>Acciones</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let venta of ventas">
+          <td>{{ venta.idVenta }}</td>
+          <td>{{ venta.idCliente }}</td>
+          <td>{{ venta.totalProducto }}</td>
+          <td>{{ venta.total }}</td>
+          <td>{{ venta.contacto }}</td>
+          <td>{{ venta.idLocalidad }}</td>
+          <td>{{ venta.telefono }}</td>
+          <td>{{ venta.direccion }}</td>
+          <td>{{ venta.idTransaccion }}</td>
+          <td>{{ venta.fechaVenta | date }}</td>
+          <td>
+            <button (click)="eliminarVenta(venta.idVenta)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div #modalCrearCategoria class="modal" tabindex="-1" role="dialog" style="display: none;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Crear Nueva Categoría</h5>
+          <button type="button" class="close" (click)="modalCrearCategoria.style.display = 'none'">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="descripcion">Idcliente</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevaVenta.idCliente">
+            </div>
+            <div class="form-group">
+              <label for="descripcion">TotalProducto</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevaVenta.totalProducto">
+            </div>
+            <div class="form-group">
+              <label for="descripcion">Total</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevaVenta.total">
+            </div>
+            <div class="form-group">
+              <label for="descripcion">Contacto</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevaVenta.contacto">
+            </div>
+            <!-- <div class="form-group">
+              <label for="descripcion">Correo</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevaVenta.idLocalidad">
+            </div> -->
+            <div class="form-group">
+              <label for="descripcion">Telefono</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevaVenta.telefono">
+            </div>
+            <div class="form-group">
+              <label for="descripcion">Direccion</label>
+              <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevaVenta.direccion">
+            </div>
+            <!-- Agrega otros campos aquí -->
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modalCrearCategoria.style.display = 'none'">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="crearVenta(); modalCrearCategoria.style.display = 'none'">Crear</button>
+        </div>
+      </div>
+    </div>

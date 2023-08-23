@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+.mi-contenedor {
+    background-image: url('/../../../../assets/img/ecommerce-hosting.jpg');
+    background-size: cover; /* Ajusta el tamaño de la imagen al contenedor */
+    width: 100%; /* Ajusta el ancho según tus necesidades */
+    height: 800px; /* Ajusta la altura según tus necesidades */
+    /* Otros estilos relacionados con el fondo */
+  }
+  

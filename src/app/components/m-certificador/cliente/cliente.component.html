@@ -1,0 +1,72 @@
+<div class="container">
+  <button class="btn btn-primary" (click)="modalCrearCategoria.style.display = 'block'">Crear Cliente</button>
+
+    <h2>Listado de Clientes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Correo</th>
+          <th>Activo</th>
+          <th>Fecha de Registro</th>
+          <th>Acciones</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of clientes">
+          <td>{{ cliente.idCliente }}</td>
+          <td>{{ cliente.nombre }}</td>
+          <td>{{ cliente.apellidos }}</td>
+          <td>{{ cliente.correo }}</td>
+          <td>{{ cliente.activo }}</td>
+          <td>{{ cliente.fechaRegistro | date }}</td>
+          <td>
+            <button (click)="eliminarCliente(cliente.idCliente)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <div #modalCrearCategoria class="modal" tabindex="-1" role="dialog" style="display: none;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Crear Nueva Categoría</h5>
+            <button type="button" class="close" (click)="modalCrearCategoria.style.display = 'none'">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="descripcion">Nombre</label>
+                <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevoCliente.nombre">
+              </div>
+              <div class="form-group">
+                <label for="descripcion">Apellido</label>
+                <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevoCliente.apellidos">
+              </div>
+              <div class="form-group">
+                <label for="descripcion">Correo</label>
+                <input type="text" class="form-control" id="descripcion" name="descripcion" [(ngModel)]="nuevoCliente.correo">
+              </div>
+              <!-- Agrega otros campos aquí -->
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modalCrearCategoria.style.display = 'none'">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="crearCliente(); modalCrearCategoria.style.display = 'none'">Crear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+  </div>
+  
+ 
+
